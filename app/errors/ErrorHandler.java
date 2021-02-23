@@ -9,10 +9,13 @@ import play.http.DefaultHttpErrorHandler;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
+import scala.Option;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -23,9 +26,9 @@ public class ErrorHandler extends DefaultHttpErrorHandler {
     public ErrorHandler(
             Config config,
             Environment environment,
-            OptionalSourceMapper sourceMapper,
             Provider<Router> routes) {
-        super(config, environment, sourceMapper, routes);
+        // See https://github.com/playframework/playframework/issues/10486
+        super(config, environment, new OptionalSourceMapper(Option.empty()) , routes);
     }
 
     protected CompletionStage<Result> onProdServerError(
